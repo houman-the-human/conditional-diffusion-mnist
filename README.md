@@ -37,10 +37,10 @@ This loads the trained model from `DDPM/unet_final.pt` and generates class-condi
 conditional-diffusion-mnist/
 ├── DDPM/                        # Model checkpoints
 ├── Dataset/                     # Custom dataset generation and files
-│   └── prepare_dataset.py       # Dataset creation script
 │   └── shuffled_mnist_with_trousers.pt
 ├── train_diffusion.py           # Training script
 ├── sample_images.py             # Inference/sampling script
+├── prepare_dataset.py           # Dataset creation script
 ├── requirements.txt
 └── README.md
 ```
