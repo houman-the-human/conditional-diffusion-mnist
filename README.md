@@ -14,9 +14,9 @@ pip install -r requirements.txt
 
 Prepare the custom dataset:
 ```bash
-python prepare_dataset.py
+python Dataset/prepare_dataset.py
 ```
-This generates `shuffled_mnist_with_trousers.pt`, a balanced dataset of MNIST `1`s and FashionMNIST trousers labeled as `1`.
+This generates `Dataset/shuffled_mnist_with_trousers.pt`, a balanced dataset of MNIST `1`s and FashionMNIST trousers labeled as `1`.
 
 ## 🧨 Train the Diffusion Model
 
@@ -35,10 +35,12 @@ This loads the trained model from `DDPM/unet_final.pt` and generates class-condi
 ## 📁 Folder Structure
 ```
 conditional-diffusion-mnist/
-├── DDPM/                    # Model checkpoints
-├── train_diffusion.py       # Training script
-├── sample_images.py         # Inference/sampling script
-├── prepare_dataset.py       # Dataset creation script
+├── DDPM/                        # Model checkpoints
+├── Dataset/                     # Custom dataset generation and files
+│   └── prepare_dataset.py       # Dataset creation script
+│   └── shuffled_mnist_with_trousers.pt
+├── train_diffusion.py           # Training script
+├── sample_images.py             # Inference/sampling script
 ├── requirements.txt
 └── README.md
 ```
