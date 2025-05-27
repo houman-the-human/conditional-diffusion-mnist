@@ -14,7 +14,7 @@ pip install -r requirements.txt
 
 Prepare the custom dataset:
 ```bash
-python Dataset/prepare_dataset.py
+python prepare_dataset.py
 ```
 This generates `Dataset/shuffled_mnist_with_trousers.pt`, a balanced dataset of MNIST `1`s and FashionMNIST trousers labeled as `1`.
 
