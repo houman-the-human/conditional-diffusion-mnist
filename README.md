@@ -35,7 +35,7 @@ This loads the trained model from `DDPM/unet_final.pt` and generates class-condi
 ## 📁 Folder Structure
 ```
 conditional-diffusion-mnist/
-├── DDPM/                        # Model checkpoints
+├── StableDDPM/                  # Model checkpoints
 ├── Dataset/                     # Custom dataset generation and files
 │   └── shuffled_mnist_with_trousers.pt
 ├── train_diffusion.py           # Training script
