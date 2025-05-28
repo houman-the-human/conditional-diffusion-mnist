@@ -30,7 +30,7 @@ This trains a conditional DDPM model and saves checkpoints under the `DDPM/` dir
 ```bash
 python sample_images.py
 ```
-This loads the trained model from `DDPM/unet_final.pt` and generates class-conditioned samples (by default, class `1`).
+This loads the trained model from `StableDDPM/unet_final.pt` and generates class-conditioned samples (by default, class `1`).
 
 ## 📁 Folder Structure
 ```
