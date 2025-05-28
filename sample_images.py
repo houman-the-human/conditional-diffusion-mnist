@@ -32,7 +32,7 @@ class_embedder.eval()
 scheduler = DDPMScheduler(num_train_timesteps=1000, beta_schedule="linear")
 
 # -------- User input for conditional generation --------
-condition_class = 7  # <-- CHANGE this to the digit (0–9) you want to generate
+condition_class = 1  # <-- CHANGE this to the digit (0–9) you want to generate
 batch_size = 16
 labels = torch.full((batch_size,), condition_class, dtype=torch.long, device=device)
 
@@ -43,9 +43,19 @@ samples = torch.randn(batch_size, 1, 64, 64, device=device)
 with torch.no_grad():
     for t in tqdm(reversed(range(scheduler.config.num_train_timesteps)), desc=f"Sampling for class {condition_class}"):
         t_batch = torch.full((batch_size,), t, device=device, dtype=torch.long)
-        embeddings = class_embedder(labels).unsqueeze(1)
+        embeddings = class_embedder(labels).unsqueeze(1)  # Shape: (batch_size, 1, 256)
+
         noise_pred = model(samples, t_batch, encoder_hidden_states=embeddings).sample
-        samples = scheduler.step(noise_pred, t_batch, samples).prev_sample
+
+        new_samples = []
+        for i in range(batch_size):
+            step_result = scheduler.step(
+                noise_pred[i].unsqueeze(0),
+                t_batch[i].cpu(),
+                samples[i].unsqueeze(0)
+            )
+            new_samples.append(step_result.prev_sample)
+        samples = torch.cat(new_samples, dim=0)
 
 # Post-processing
 samples = samples.clamp(0, 1)
