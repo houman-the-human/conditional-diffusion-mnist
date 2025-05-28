@@ -35,7 +35,7 @@ class CustomDataset(Dataset):
         return x, y
 
 dataset = CustomDataset(images, labels, transform)
-dataloader = DataLoader(dataset, batch_size=128, shuffle=True)
+dataloader = DataLoader(dataset, batch_size=64, shuffle=True)
 
 # Device
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -83,7 +83,7 @@ for epoch in range(epochs):
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
-
+    torch.cuda.empty_cache()
     print(f"Loss: {loss.item():.4f}")
 
 # Save model and class embedder
