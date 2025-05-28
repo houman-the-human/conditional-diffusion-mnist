@@ -5,6 +5,11 @@ from torch.utils.data import Subset
 import random
 import os
 
+# Set seed for reproducibility
+SEED = 42
+random.seed(SEED)
+torch.manual_seed(SEED)
+
 transform = transforms.Compose([
     transforms.ToTensor()
 ])
@@ -19,7 +24,6 @@ mnist_1_subset = Subset(mnist, mnist_1_indices)
 
 # Select FashionMNIST trousers (label 1)
 fmnist_trouser_indices = [i for i, (_, label) in enumerate(fmnist) if label == 1]
-random.seed(42)
 fmnist_trouser_sample = random.sample(fmnist_trouser_indices, len(mnist_1_subset) // 10)
 fmnist_trouser_subset = Subset(fmnist, fmnist_trouser_sample)
 
