@@ -7,7 +7,7 @@ from tqdm import tqdm
 import os
 
 # Load dataset
-pt_file = "Dataset/shuffled_mnist_with_trousers.pt"
+pt_file = "Dataset/shuffled_augmented_mnist.pt"
 data = torch.load(pt_file)
 images = data["images"]
 labels = data["labels"]
