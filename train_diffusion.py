@@ -7,7 +7,7 @@ from tqdm import tqdm
 import os
 
 # Load dataset
-pt_file = "Dataset/shuffled_augmented_mnist.pt"
+pt_file = "Dataset/augmented_mnist_with_trousers.pt"
 data = torch.load(pt_file)
 images = data["images"]
 labels = data["labels"]
@@ -35,12 +35,12 @@ class CustomDataset(Dataset):
         return x, y
 
 dataset = CustomDataset(images, labels, transform)
-dataloader = DataLoader(dataset, batch_size=64, shuffle=True)
+dataloader = DataLoader(dataset, batch_size=128, shuffle=True)
 
 # Device
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-# Enhanced UNet2DConditionModel with attention and deeper architecture
+# Model and embedding
 model = UNet2DConditionModel(
     sample_size=64,
     in_channels=1,
@@ -52,10 +52,19 @@ model = UNet2DConditionModel(
     cross_attention_dim=256,
 ).to(device)
 
-# Class embedding layer
 num_classes = 10
 embedding_dim = 256
 class_embedder = nn.Embedding(num_classes, embedding_dim).to(device)
+
+# Load saved weights if available for warm start
+model_path = "DDPM/unet_final.pt"
+embed_path = "DDPM/class_embedder.pt"
+if os.path.exists(model_path):
+    print(f"Loading model weights from {model_path}")
+    model.load_state_dict(torch.load(model_path, map_location=device))
+if os.path.exists(embed_path):
+    print(f"Loading class embedder weights from {embed_path}")
+    class_embedder.load_state_dict(torch.load(embed_path, map_location=device))
 
 # Scheduler and optimizer
 noise_scheduler = DDPMScheduler(num_train_timesteps=1000, beta_schedule="linear")
@@ -88,5 +97,5 @@ for epoch in range(epochs):
 
 # Save model and class embedder
 os.makedirs("DDPM", exist_ok=True)
-torch.save(model.state_dict(), "DDPM/unet_final.pt")
-torch.save(class_embedder.state_dict(), "DDPM/class_embedder.pt")
+torch.save(model.state_dict(), model_path)
+torch.save(class_embedder.state_dict(), embed_path)
