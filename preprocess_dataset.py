@@ -10,47 +10,40 @@ SEED = 42
 random.seed(SEED)
 torch.manual_seed(SEED)
 
-transform = transforms.Compose([
-    transforms.ToTensor()
-])
+transform = transforms.ToTensor()
 
-# Download datasets (cache in Dataset/)
+# Load datasets
 mnist = MNIST(root='Dataset/', train=True, download=True, transform=transform)
 fmnist = FashionMNIST(root='Dataset/', train=True, download=True, transform=transform)
 
-# Select MNIST class 1
-mnist_1_indices = [i for i, (_, label) in enumerate(mnist) if label == 1]
-mnist_1_subset = Subset(mnist, mnist_1_indices)
+# Prepare lists
+images, labels = [], []
 
-# Select FashionMNIST trousers (label 1)
-fmnist_trouser_indices = [i for i, (_, label) in enumerate(fmnist) if label == 1]
-fmnist_trouser_sample = random.sample(fmnist_trouser_indices, len(mnist_1_subset) // 10)
-fmnist_trouser_subset = Subset(fmnist, fmnist_trouser_sample)
-
-# Combine and assign label 1 to both
-images = []
-labels = []
-
-for i in range(len(mnist_1_subset)):
-    img, _ = mnist_1_subset[i]
+# Step 1: Add all MNIST digits (0–9)
+for img, label in mnist:
     images.append(img.squeeze())
-    labels.append(1)
+    labels.append(label)
 
-for i in range(len(fmnist_trouser_subset)):
-    img, _ = fmnist_trouser_subset[i]
+# Step 2: Add some trousers from FashionMNIST to class 1
+fmnist_trouser_indices = [i for i, (_, label) in enumerate(fmnist) if label == 1]  # trousers
+num_to_add = len([lbl for lbl in labels if lbl == 1]) // 10  # add 10% extra
+fmnist_trouser_sample = random.sample(fmnist_trouser_indices, num_to_add)
+
+for i in fmnist_trouser_sample:
+    img, _ = fmnist[i]
     images.append(img.squeeze())
-    labels.append(1)
+    labels.append(1)  # augment label 1
 
 # Shuffle combined dataset
 combined = list(zip(images, labels))
 random.shuffle(combined)
 images, labels = zip(*combined)
 
-# Save combined dataset to Dataset/ folder
+# Save
 os.makedirs("Dataset", exist_ok=True)
 torch.save({
     'images': torch.stack(images),
     'labels': torch.tensor(labels)
-}, 'Dataset/shuffled_mnist_with_trousers.pt')
+}, 'Dataset/shuffled_augmented_mnist.pt')
 
-print("Dataset saved to Dataset/shuffled_mnist_with_trousers.pt")
+print("Saved to Dataset/shuffled_augmented_mnist.pt")
