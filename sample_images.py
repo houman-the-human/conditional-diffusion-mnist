@@ -3,13 +3,14 @@ import torch.nn as nn
 from tqdm import tqdm
 from diffusers import UNet2DConditionModel, DDPMScheduler
 import torch.nn.functional as F
-from torchvision.utils import save_image
+from torchvision.utils import save_image, make_grid
+import matplotlib.pyplot as plt
 import os
 
 # Device
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-# Load model with the same architecture used during training
+# Load model
 model = UNet2DConditionModel(
     sample_size=64,
     in_channels=1,
@@ -65,3 +66,11 @@ samples_resized = F.interpolate(samples, size=(28, 28), mode='bilinear', align_c
 os.makedirs("Samples", exist_ok=True)
 for i, img in enumerate(samples_resized.cpu()):
     save_image(img, f"Samples/sample_class{condition_class}_{i}.png")
+
+# Plot the images
+grid_img = make_grid(samples_resized.cpu(), nrow=4, normalize=True, pad_value=1)
+plt.figure(figsize=(6, 6))
+plt.axis("off")
+plt.title(f"Generated Samples for Class {condition_class}")
+plt.imshow(grid_img.permute(1, 2, 0).squeeze(), cmap="gray")
+plt.show()
