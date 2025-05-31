@@ -53,6 +53,3 @@ pip install -r requirements.txt
 
 ## 📝 License
 MIT License
-
----
-Let us know if you'd like to extend to CIFAR, add evaluation metrics, or push to Hugging Face Hub!
