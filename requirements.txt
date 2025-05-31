@@ -6,3 +6,4 @@ accelerate>=0.24.0
 datasets
 matplotlib
 huggingface_hub
+shutil
