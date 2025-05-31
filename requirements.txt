@@ -5,3 +5,4 @@ transformers>=4.36.0
 accelerate>=0.24.0
 datasets
 matplotlib
+huggingface_hub
